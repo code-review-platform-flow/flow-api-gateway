@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: flow-main
+
+auth:
+  uri: ${FLOW_AUTH_URI}

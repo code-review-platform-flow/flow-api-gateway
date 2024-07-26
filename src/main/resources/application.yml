@@ -1,3 +1,6 @@
 spring:
-  application:
-    name: flow-main
+  profiles:
+    group:
+      "local": "local"
+      "dev": "dev"
+      "prd": "prd"
