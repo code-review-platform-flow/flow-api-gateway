@@ -1,13 +1,13 @@
-package org.example.flowmain;
+package org.flow.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FlowMainApplication {
+public class FlowApiGateWayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(FlowMainApplication.class, args);
+        SpringApplication.run(FlowApiGateWayApplication.class, args);
     }
 
 }

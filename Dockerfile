@@ -5,8 +5,8 @@ ARG FLOW_AUTH_URI
 
 ENV FLOW_AUTH_URI=${FLOW_AUTH_URI}
 
-RUN mkdir /flow-main
-WORKDIR /flow-main
+RUN mkdir /flow-api-gateway
+WORKDIR /flow-api-gateway
 
 COPY . .
 
@@ -19,12 +19,12 @@ ENV TZ=Asia/Seoul
 ENV PROFILE=${PROFILE}
 ENV FLOW_AUTH_URI=${FLOW_AUTH_URI}
 
-RUN mkdir /flow-main
-WORKDIR /flow-main
+RUN mkdir /flow-api-gateway
+WORKDIR /flow-api-gateway
 
-COPY --from=builder /flow-main/build/libs/flow-main-* /flow-main/app.jar
+COPY --from=builder /flow-api-gateway/build/libs/flow-api-gateway-* /flow-api-gateway/app.jar
 
 CMD ["sh", "-c", " \
     java -Dspring.profiles.active=${PROFILE} \
          -Dauth.uri=${FLOW_AUTH_URI} \
-         -jar /flow-main/app.jar"]
+         -jar /flow-api-gateway/app.jar"]

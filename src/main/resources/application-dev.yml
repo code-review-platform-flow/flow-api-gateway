@@ -1,6 +1,6 @@
 spring:
   application:
-    name: flow-main
+    name: flow-api-gateway
 
 auth:
-  uri: ${FLOW_AUTH_URI}
+  uri: ${FLOW_MAIN_URI}
