@@ -1,10 +1,10 @@
-package org.example.flowmain;
+package org.flow.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FlowMainApplicationTests {
+class FlowApiGateWayApplicationTests {
 
     @Test
     void contextLoads() {
