@@ -7,11 +7,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.annotation.PostConstruct;
+
 @RestController
 public class TestController {
 
     @Value("${auth.uri}")
     private String uri;
+
+    @PostConstruct
+    public void init() {
+        System.out.println("uri : " + uri);
+    }
 
     @CrossOrigin
     @GetMapping("/test")
