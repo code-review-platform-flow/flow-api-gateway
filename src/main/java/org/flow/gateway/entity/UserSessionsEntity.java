@@ -15,6 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.flow.gateway.common.entity.BaseEntity;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -23,7 +25,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Table(name = "user_sessions")
-public class UserSessionEntity {
+@Where(clause = "use_yn = true")
+public class UserSessionsEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +35,7 @@ public class UserSessionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private UsersEntity user;
 
     @Column(name = "access_token", nullable = false)
     private String accessToken;

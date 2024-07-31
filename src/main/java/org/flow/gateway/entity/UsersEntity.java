@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.flow.gateway.common.entity.BaseEntity;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
@@ -24,7 +26,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Table(name = "users")
-public class UserEntity extends BaseEntity {
+@Where(clause = "use_yn = true")
+public class UsersEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +44,7 @@ public class UserEntity extends BaseEntity {
     private List<UserInfoEntity> userInfoEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserSessionEntity> userSessionEntities = new ArrayList<>();
+    private List<UserSessionsEntity> userSessionEntities = new ArrayList<>();
 
     @Version
     private int version;

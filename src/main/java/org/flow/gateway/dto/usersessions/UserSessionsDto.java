@@ -1,4 +1,4 @@
-package org.flow.gateway.dto.jpa;
+package org.flow.gateway.dto.usersessions;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class JpaLoginUserDto {
+public class UserSessionsDto {
 
-    private String email;
-    private String password;
-    private String role;
-
+    private Long sessionId;
+    private Long userId;
+    private String accessToken;
+    private String refreshToken;
 }

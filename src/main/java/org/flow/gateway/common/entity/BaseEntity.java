@@ -1,4 +1,4 @@
-package org.flow.gateway.entity;
+package org.flow.gateway.common.entity;
 
 
 import jakarta.persistence.Column;
