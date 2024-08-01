@@ -13,6 +13,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  jwt:
+    secret: ${JWT_SECRET}
+    access:
+      expiration: ${ACCESS_EXPIRATION}
+    refresh:
+      expiration: ${REFRESH_EXPIRATION}
 
 auth:
   uri: ${FLOW_MAIN_URI}
