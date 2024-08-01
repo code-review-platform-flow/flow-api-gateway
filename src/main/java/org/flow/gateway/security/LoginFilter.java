@@ -1,5 +1,6 @@
 package org.flow.gateway.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserSessionsLoginService userSessionsLoginService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected String obtainUsername(HttpServletRequest request) {
@@ -66,16 +68,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
             .email(email)
-            .AccessToken(userSessionsDto.getAccessToken())
-            .RefreshToken(userSessionsDto.getRefreshToken())
+            .accessToken(userSessionsDto.getAccessToken())
+            .refreshToken(userSessionsDto.getRefreshToken())
             .build();
 
+        response.getWriter().write(objectMapper.writeValueAsString(loginResponseDto));
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
         HttpServletResponse response, AuthenticationException failed)
         throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

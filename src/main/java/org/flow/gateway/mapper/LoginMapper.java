@@ -10,8 +10,8 @@ import org.mapstruct.Mapping;
 public interface LoginMapper {
 
     @Mapping(source = "users.email", target = "email")
-    @Mapping(source = "userSessions.accessToken", target = "AccessToken")
-    @Mapping(source = "userSessions.refreshToken", target = "RefreshToken")
+    @Mapping(source = "userSessions.accessToken", target = "accessToken")
+    @Mapping(source = "userSessions.refreshToken", target = "refreshToken")
     LoginResponseDto toLoginResponseDto(UserSessionsDto userSessions, UsersDto users);
 
 }
