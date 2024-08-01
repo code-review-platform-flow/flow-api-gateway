@@ -19,6 +19,3 @@ spring:
       expiration: ${ACCESS_EXPIRATION}
     refresh:
       expiration: ${REFRESH_EXPIRATION}
-
-auth:
-  uri: ${FLOW_MAIN_URI}
