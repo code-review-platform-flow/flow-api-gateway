@@ -10,15 +10,14 @@ import lombok.RequiredArgsConstructor;
 import org.flow.gateway.dto.login.response.LoginResponseDto;
 import org.flow.gateway.dto.users.UsersDto;
 import org.flow.gateway.dto.usersessions.UserSessionsDto;
-import org.flow.gateway.mapper.LoginMapper;
-import org.flow.gateway.mapper.UserSessionsMapper;
-import org.flow.gateway.service.usersessions.UserSessionsLoginService;
-import org.flow.gateway.service.usersessions.persistence.UserSessionsService;
+import org.flow.gateway.service.usersessions.persistence.UserSessionsLoginService;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -26,7 +25,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserSessionsLoginService userSessionsLoginService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @Override
     protected String obtainUsername(HttpServletRequest request) {
@@ -51,25 +50,37 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         throws IOException, ServletException {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
+        Long userId = customUserDetails.getUserId();
         String email = customUserDetails.getUsername();
         String role = authResult.getAuthorities().iterator().next().getAuthority();
 
-        UserSessionsDto userSessionsDto = UserSessionsDto.builder()
-            .userId(customUserDetails.getUserId())
-            .accessToken(jwtUtil.createAccessToken(email, role))
-            .refreshToken(jwtUtil.createRefreshToken(email, role))
-            .build();
+        String accessToken = jwtUtil.createAccessToken(userId, email, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, email, role);
 
         UsersDto usersDto = UsersDto.builder()
-            .userId(customUserDetails.getUserId())
+            .userId(userId)
             .build();
 
-        userSessionsLoginService.save(userSessionsDto, usersDto);
+        UserSessionsDto userSessionsDto = userSessionsLoginService.findByUserId(usersDto);
+        if (userSessionsDto == null){
+            UserSessionsDto userSessions = UserSessionsDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+
+            userSessionsLoginService.save(userSessions, usersDto);
+        }
+        else{
+            userSessionsDto.setAccessToken(accessToken);
+            userSessionsDto.setRefreshToken(refreshToken);
+
+            userSessionsLoginService.modify(userSessionsDto, usersDto);
+        }
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
             .email(email)
-            .accessToken(userSessionsDto.getAccessToken())
-            .refreshToken(userSessionsDto.getRefreshToken())
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
             .build();
 
         response.getWriter().write(objectMapper.writeValueAsString(loginResponseDto));

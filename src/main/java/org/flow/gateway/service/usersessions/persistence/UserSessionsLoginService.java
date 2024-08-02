@@ -1,4 +1,4 @@
-package org.flow.gateway.service.usersessions;
+package org.flow.gateway.service.usersessions.persistence;
 
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +27,23 @@ public class UserSessionsLoginService {
         userSessionsEntity.setUser(usersEntity);
         userSessionsRepository.save(userSessionsEntity);
         return userSessionsMapper.toDto(userSessionsEntity);
+    }
+
+    @Transactional
+    public UserSessionsDto modify(UserSessionsDto userSessionsDto, UsersDto usersDto){
+        UsersEntity usersEntity = usersMapper.toEntity(usersDto);
+        UserSessionsEntity userSessionsEntity = userSessionsMapper.toEntity(userSessionsDto);
+        userSessionsEntity.setUser(usersEntity);
+        userSessionsEntity.setUseYn(true);
+        userSessionsRepository.save(userSessionsEntity);
+        return userSessionsMapper.toDto(userSessionsEntity);
+    }
+
+    public UserSessionsDto findByUserId(UsersDto usersDto){
+        UsersEntity usersEntity = usersMapper.toEntity(usersDto);
+        UserSessionsEntity foundSessionsEntity = userSessionsRepository.findByUserId(usersEntity.getUserId())
+            .orElse(null);
+        return userSessionsMapper.toDto(foundSessionsEntity);
     }
 
 }

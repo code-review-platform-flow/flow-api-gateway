@@ -23,7 +23,7 @@ public class UsersService {
         usersRepository.save(usersEntity);
         return usersMapper.toDto(usersEntity);
     }
-    @Transactional
+
     public UsersDto findByEmail(String email){
         return usersMapper.toDto(usersRepository.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email)));
