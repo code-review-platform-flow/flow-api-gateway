@@ -65,7 +65,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/auth/login/**", "/auth/register/**", "/auth/refresh-token/**", "/auth/test/**").permitAll()
+                .requestMatchers("/auth/login/**", "/auth/register/**", "/auth/refresh-token/**").permitAll()
             );
         return http.build();
     }

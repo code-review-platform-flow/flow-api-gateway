@@ -35,10 +35,4 @@ public class AuthController {
     public ResponseEntity<TokenResponseDto> reCreateAccessToken(@RequestHeader("RefreshToken") String authHeader) throws IOException {
         return authService.reCreateAccessToken(authHeader);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<String> test(){
-        return ResponseEntity.ok("pass the filter");
-    }
-
 }
