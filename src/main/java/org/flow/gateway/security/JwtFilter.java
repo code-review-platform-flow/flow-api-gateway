@@ -1,6 +1,7 @@
 package org.flow.gateway.security;
 
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,43 +18,57 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    private static final String AUTH_LOGIN_PATH = "/auth/login";
+    private static final String ACCESS_TOKEN_HEADER = "AccessToken";
+
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        if (path.equals("/auth/login")) {
-            // 로그인은 Filter 건너뛰기
+
+        if (path.equals(AUTH_LOGIN_PATH)) {
+            // Skip filter for login
             filterChain.doFilter(request, response);
             return;
         }
 
-        String authHeader = request.getHeader("AccessToken");
+        String authHeader = request.getHeader(ACCESS_TOKEN_HEADER);
 
-        jwtUtil.validateHeader(authHeader, response); //header 검사
-        String accessToken = jwtUtil.getToken(authHeader); //Bearer 떼기
-        jwtUtil.isExpired(accessToken, response); //token의 만료시간 검사
+        if (authHeader == null || authHeader.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing AccessToken header");
+            return;
+        }
 
-        Long userId = jwtUtil.getUserId(accessToken);
-        String email = jwtUtil.getEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
+        try {
+            jwtUtil.validateHeader(authHeader);
+            String accessToken = jwtUtil.getToken(authHeader);
+            jwtUtil.isExpired(accessToken);
 
-        UsersDto usersDto = UsersDto.builder()
-            .userId(userId)
-            .email(email)
-            .password("tempPassword")
-            .build();
-        UserInfoDto userInfoDto = UserInfoDto.builder()
-            .role(role)
-            .build();
+            Long userId = jwtUtil.getUserId(accessToken);
+            String email = jwtUtil.getEmail(accessToken);
+            String role = jwtUtil.getRole(accessToken);
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(usersDto, userInfoDto);
+            UsersDto usersDto = UsersDto.builder()
+                .userId(userId)
+                .email(email)
+                .password("tempPassword")  // Ensure this placeholder password is handled securely
+                .build();
+            UserInfoDto userInfoDto = UserInfoDto.builder()
+                .role(role)
+                .build();
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            CustomUserDetails customUserDetails = new CustomUserDetails(usersDto, userInfoDto);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }

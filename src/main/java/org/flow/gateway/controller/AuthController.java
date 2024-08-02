@@ -18,6 +18,7 @@ import org.flow.gateway.service.usersessions.persistence.UserSessionsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,17 +32,13 @@ public class AuthController {
     private final ObjectMapper objectMapper;
 
     @PatchMapping("/refresh-token")
-    public void reCreateAccessToken(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {
+    public ResponseEntity<TokenResponseDto> reCreateAccessToken(@RequestHeader("RefreshToken") String authHeader) throws IOException {
 
-        String authHeader = request.getHeader("RefreshToken");
-
-        jwtUtil.validateHeader(authHeader, response);
+        jwtUtil.validateHeader(authHeader);
         String refreshToken = jwtUtil.getToken(authHeader);
-        jwtUtil.isExpired(refreshToken, response);
+        jwtUtil.isExpired(refreshToken);
 
         Long userId = jwtUtil.getUserId(refreshToken);
-        System.out.println(userId);
         String email = jwtUtil.getEmail(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
@@ -52,23 +49,16 @@ public class AuthController {
             .build();
 
         UserSessionsDto userSessionsDto = userSessionsService.findByUserId(usersDto);
-        System.out.println("1");
         userSessionsDto.setAccessToken(accessToken);
 
         UserSessionsDto usd = userSessionsService.modify(userSessionsDto, usersDto);
-        System.out.println("2");
-        System.out.println(usd.getAccessToken());
-        System.out.println(usd.getRefreshToken());
-        System.out.println(usd.getSessionId());
-        System.out.println(usd.getVersion());
 
         TokenResponseDto tokenResponseDto = TokenResponseDto.builder()
             .accessToken(accessToken)
             .build();
 
-        System.out.println(tokenResponseDto.getAccessToken());
-
-        response.getWriter().write(objectMapper.writeValueAsString(tokenResponseDto));
+        return ResponseEntity.ok(tokenResponseDto);
     }
+
 
 }

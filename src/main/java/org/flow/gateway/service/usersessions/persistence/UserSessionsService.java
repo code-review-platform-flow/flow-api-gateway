@@ -20,6 +20,7 @@ public class UserSessionsService {
     private final UserSessionsMapper userSessionsMapper;
     private final UsersMapper usersMapper;
 
+    // FIXME : jpa에서는 수정과, 저장이 같음. dto를수정 하고 다시 save를 하면 수정되므로, 수정바람
     @Transactional
     public UserSessionsDto modify(UserSessionsDto userSessionsDto, UsersDto usersDto){
         UsersEntity usersEntity = usersMapper.toEntity(usersDto);
