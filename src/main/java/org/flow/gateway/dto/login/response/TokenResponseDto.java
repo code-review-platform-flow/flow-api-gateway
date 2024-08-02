@@ -1,4 +1,4 @@
-package org.flow.gateway.dto.usersessions;
+package org.flow.gateway.dto.login.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserSessionsDto {
+public class TokenResponseDto {
 
-    private Long sessionId;
-    private Long userId;
     private String accessToken;
-    private String refreshToken;
-    private boolean useYn;
-    private Long version;
+
 }

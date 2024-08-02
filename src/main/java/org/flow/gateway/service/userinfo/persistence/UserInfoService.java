@@ -16,7 +16,7 @@ public class UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final UserInfoMapper userInfoMapper;
 
-    @Transactional
+
     public UserInfoDto findByUserId(Long userId){
         return userInfoMapper.toDto(userInfoRepository.findByUserId(userId)
             .orElseThrow(() -> new RuntimeException("UserInfo not found with user")));

@@ -2,13 +2,14 @@ package org.flow.gateway.security;
 
 
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.flow.gateway.common.property.JwtTokenProperty;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,26 +23,33 @@ public class JwtUtil {
         secretKey = new SecretKeySpec(jwtTokenProperty.getSecret().getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getEmail(String token) {
+    public String getToken(String authHeader){
+        return authHeader.split(" ")[1];
+    }
 
+    public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
             .get("email", String.class);
     }
 
     public String getRole(String token) {
-
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
             .get("role", String.class);
     }
 
-    public Boolean isExpired(String token) {
+    public Long getUserId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+            .get("user_id", Long.class);
+    }
 
+    public boolean isExpired(String token) throws IOException {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
             .getExpiration().before(new Date());
     }
 
-    public String createAccessToken(String email, String role) {
+    public String createAccessToken(Long userId, String email, String role) {
         return Jwts.builder()
+            .claim("user_id", userId)
             .claim("email", email)
             .claim("role", role)
             .issuedAt(new Date(System.currentTimeMillis()))
@@ -50,8 +58,9 @@ public class JwtUtil {
             .compact();
     }
 
-    public String createRefreshToken(String email, String role){
+    public String createRefreshToken(Long userId, String email, String role){
         return Jwts.builder()
+            .claim("user_id", userId)
             .claim("email", email)
             .claim("role", role)
             .issuedAt(new Date(System.currentTimeMillis()))
