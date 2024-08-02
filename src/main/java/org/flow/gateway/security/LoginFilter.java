@@ -10,21 +10,19 @@ import lombok.RequiredArgsConstructor;
 import org.flow.gateway.dto.login.response.LoginResponseDto;
 import org.flow.gateway.dto.users.UsersDto;
 import org.flow.gateway.dto.usersessions.UserSessionsDto;
-import org.flow.gateway.service.usersessions.persistence.UserSessionsLoginService;
-import org.springframework.context.annotation.Configuration;
+import org.flow.gateway.service.usersessions.persistence.UserSessionsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserSessionsLoginService userSessionsLoginService;
+    private final UserSessionsService userSessionsService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -61,21 +59,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             .userId(userId)
             .build();
 
-        UserSessionsDto userSessionsDto = userSessionsLoginService.findByUserId(usersDto);
-        if (userSessionsDto == null){
-            UserSessionsDto userSessions = UserSessionsDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        UserSessionsDto userSessionsDto = userSessionsService.existsByUserId(usersDto);
+        userSessionsDto.setAccessToken(accessToken);
+        userSessionsDto.setRefreshToken(refreshToken);
 
-            userSessionsLoginService.save(userSessions, usersDto);
-        }
-        else{
-            userSessionsDto.setAccessToken(accessToken);
-            userSessionsDto.setRefreshToken(refreshToken);
-
-            userSessionsLoginService.modify(userSessionsDto, usersDto);
-        }
+        userSessionsService.save(userSessionsDto, usersDto);
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
             .email(email)

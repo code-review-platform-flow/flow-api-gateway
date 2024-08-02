@@ -1,6 +1,7 @@
 package org.flow.gateway.service.usersessions.persistence;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.flow.gateway.dto.users.UsersDto;
 import org.flow.gateway.dto.usersessions.UserSessionsDto;
@@ -21,13 +22,12 @@ public class UserSessionsService {
     private final UsersMapper usersMapper;
 
     @Transactional
-    public UserSessionsDto modify(UserSessionsDto userSessionsDto, UsersDto usersDto){
+    public UserSessionsDto save(UserSessionsDto userSessionsDto, UsersDto usersDto){
         UsersEntity usersEntity = usersMapper.toEntity(usersDto);
         UserSessionsEntity userSessionsEntity = userSessionsMapper.toEntity(userSessionsDto);
         userSessionsEntity.setUser(usersEntity);
         userSessionsEntity.setUseYn(true);
         userSessionsRepository.save(userSessionsEntity);
-        System.out.println("success save");
         return userSessionsMapper.toDto(userSessionsEntity);
     }
 
@@ -37,6 +37,11 @@ public class UserSessionsService {
         UserSessionsEntity userSessionsEntity = userSessionsRepository.findByUserId(usersEntity.getUserId())
             .orElseThrow(() -> new EntityNotFoundException("UserSession not found with user"));
         return userSessionsMapper.toDto(userSessionsEntity);
+    }
+
+    public UserSessionsDto existsByUserId(UsersDto usersDto){
+        Optional<UserSessionsEntity> userSessionsEntity = userSessionsRepository.findByUserId(usersDto.getUserId());
+        return userSessionsEntity.map(userSessionsMapper::toDto).orElse(UserSessionsDto.builder().build());
     }
 
 }

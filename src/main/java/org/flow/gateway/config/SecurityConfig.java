@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.flow.gateway.security.JwtFilter;
 import org.flow.gateway.security.JwtUtil;
 import org.flow.gateway.security.LoginFilter;
-import org.flow.gateway.service.usersessions.persistence.UserSessionsLoginService;
+import org.flow.gateway.service.usersessions.persistence.UserSessionsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final UserSessionsLoginService userSessionsLoginService;
+    private final UserSessionsService userSessionsService;
     private final ObjectMapper objectMapper;
 
     @Bean
@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil,
-            userSessionsLoginService, objectMapper);
+            userSessionsService, objectMapper);
         loginFilter.setFilterProcessesUrl("/auth/login");
 
         http
@@ -65,7 +65,7 @@ public class SecurityConfig {
 
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/auth/login/**", "/auth/register/**", "/auth/refresh-token/**").permitAll()
+                .requestMatchers("/auth/login/**", "/auth/register/**", "/auth/refresh-token/**", "/auth/test/**").permitAll()
             );
         return http.build();
     }

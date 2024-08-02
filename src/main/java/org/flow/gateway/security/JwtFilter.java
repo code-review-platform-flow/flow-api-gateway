@@ -17,43 +17,54 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    private static final String AUTH_LOGIN_PATH = "/auth/login";
+    private static final String ACCESS_TOKEN_HEADER = "AccessToken";
+
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-        FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        if (path.equals("/auth/login")) {
-            // 로그인은 Filter 건너뛰기
+        if (path.equals(AUTH_LOGIN_PATH)) {
+            // Skip filter for login
             filterChain.doFilter(request, response);
             return;
         }
+        String authHeader = request.getHeader(ACCESS_TOKEN_HEADER);
+        if(authHeader == null || authHeader.isEmpty()){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing AccessToken header");
+            return;
+        }
 
-        String authHeader = request.getHeader("AccessToken");
+        try{
+            String accessToken = jwtUtil.getToken(authHeader);
+            boolean checkExpiration = jwtUtil.isExpired(accessToken);
+            if(checkExpiration){
+                throw new RuntimeException("AccessToken is expired");
+            }
 
-        jwtUtil.validateHeader(authHeader, response); //header 검사
-        String accessToken = jwtUtil.getToken(authHeader); //Bearer 떼기
-        jwtUtil.isExpired(accessToken, response); //token의 만료시간 검사
+            Long userId = jwtUtil.getUserId(accessToken);
+            String email = jwtUtil.getEmail(accessToken);
+            String role = jwtUtil.getRole(accessToken);
 
-        Long userId = jwtUtil.getUserId(accessToken);
-        String email = jwtUtil.getEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
+            UsersDto usersDto = UsersDto.builder()
+                .userId(userId)
+                .email(email)
+                .password("tempPassword")
+                .build();
+            UserInfoDto userInfoDto = UserInfoDto.builder()
+                .role(role)
+                .build();
 
-        UsersDto usersDto = UsersDto.builder()
-            .userId(userId)
-            .email(email)
-            .password("tempPassword")
-            .build();
-        UserInfoDto userInfoDto = UserInfoDto.builder()
-            .role(role)
-            .build();
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(usersDto, userInfoDto);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            CustomUserDetails customUserDetails = new CustomUserDetails(usersDto, userInfoDto);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }

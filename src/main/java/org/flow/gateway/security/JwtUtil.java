@@ -42,21 +42,9 @@ public class JwtUtil {
             .get("user_id", Long.class);
     }
 
-    public void validateHeader(String authHeader, HttpServletResponse response)
-        throws IOException {
-        if(authHeader == null || authHeader.startsWith("Bearer ")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-    }
-
-    public void isExpired(String token, HttpServletResponse response) throws IOException {
-
-        if(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
-            .getExpiration().before(new Date())){
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+    public boolean isExpired(String token) throws IOException {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload()
+            .getExpiration().before(new Date());
     }
 
     public String createAccessToken(Long userId, String email, String role) {
