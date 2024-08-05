@@ -14,12 +14,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: main-route
-          uri: ${MAIN_ROUTE_ADDRESS}
-          predicates:
-            - Path=/**
-          filters:
-            - name: AuthenticationFilter
         - id: main-auth-route
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
