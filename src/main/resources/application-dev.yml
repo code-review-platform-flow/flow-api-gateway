@@ -19,3 +19,16 @@ spring:
       expiration: ${ACCESS_EXPIRATION}
     refresh:
       expiration: ${REFRESH_EXPIRATION}
+  cloud:
+    gateway:
+      routes:
+        - id: main-route
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/**
+          filters:
+            - name: AuthenticationFilter
+        - id: main-auth-route
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/auth/**
