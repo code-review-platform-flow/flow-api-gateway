@@ -18,3 +18,9 @@ spring:
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/auth/**
+        - id: payment-route
+          uri: ${PAYMENT_ROUTE_ADDRESS}
+          predicates:
+            - Path=/**
+          filters:
+            - name: AuthenticationFilter
