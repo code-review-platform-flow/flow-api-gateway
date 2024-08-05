@@ -1,16 +1,10 @@
 package org.flow.gateway.repository;
 
-
-import java.util.Optional;
-import org.flow.gateway.entity.UsersEntity;
 import org.flow.gateway.entity.UserInfoEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
-public interface UserInfoRepository extends JpaRepository<UserInfoEntity, Long> {
+import reactor.core.publisher.Flux;
 
-    @Query("SELECT ui FROM UserInfoEntity ui WHERE ui.user.userId = :userId")
-    Optional<UserInfoEntity> findByUserId(@Param("userId") Long userId);
-
+public interface UserInfoRepository extends ReactiveCrudRepository<UserInfoEntity, Long> {
+    Flux<UserInfoEntity> findAllByUserId(Long userId);
 }
