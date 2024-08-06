@@ -1,62 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"/>
 
-    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-
-    <appender name="jsonConsole" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <timestamp>
-                    <fieldName>timestamp</fieldName>
-                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</pattern>
-                </timestamp>
-                <logLevel>
-                    <fieldName>level</fieldName>
-                </logLevel>
-                <threadName>
-                    <fieldName>thread</fieldName>
-                </threadName>
-                <loggerName>
-                    <fieldName>logger</fieldName>
-                </loggerName>
-                <jsonMessageField>
-                    <fieldName>message</fieldName>
-                </jsonMessageField>
-                <logstashMarkers/>
-                <mdc/>
-                <context/>
-                <callerData/>
-                <stackTrace>
-                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                        <maxDepthPerThrowable>30</maxDepthPerThrowable>
-                        <rootCauseFirst>true</rootCauseFirst>
-                        <classPackagingEnabled>true</classPackagingEnabled>
-                        <packageExclusionPatterns>
-                            <pattern>sun\..*</pattern>
-                            <pattern>java\..*</pattern>
-                            <pattern>com\.sun\..*</pattern>
-                            <pattern>oracle\..*</pattern>
-                            <pattern>javax\..*</pattern>
-                        </packageExclusionPatterns>
-                    </throwableConverter>
-                </stackTrace>
-            </providers>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.springframework.cloud.gateway" level="DEBUG" additivity="false">
-        <appender-ref ref="jsonConsole"/>
-    </logger>
-    <logger name="org.springframework.web" level="DEBUG" additivity="false">
-        <appender-ref ref="jsonConsole"/>
-    </logger>
-    <logger name="org.flow.gateway.common.log.LoggingFilter" level="DEBUG" additivity="false">
-        <appender-ref ref="jsonConsole"/>
-    </logger>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
 
     <root level="INFO">
-        <appender-ref ref="jsonConsole"/>
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="JSON"/>
     </root>
 
+    <logger name="org.flow.gateway.common.log.LoggingFilter" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="JSON"/>
+    </logger>
 </configuration>
