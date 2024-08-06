@@ -26,6 +26,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	@Override
 	public GatewayFilter apply(Config config) {
 		return (exchange, chain) -> {
+			long startTime = System.currentTimeMillis();
+			logger.info("Authentication filter started at: {}", startTime);
+
 			String token = extractToken(exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION));
 
 			if (token == null) {
@@ -39,11 +42,21 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 							exchange.getRequest().mutate()
 								.header(HttpHeaders.AUTHORIZATION, "Bearer " + session.getAccessToken())
 								.build();
-							return chain.filter(exchange);
+							return chain.filter(exchange)
+								.doFinally(signalType -> {
+									long endTime = System.currentTimeMillis();
+									logger.info("Authentication filter ended at: {}", endTime);
+									logger.info("Authentication filter duration: {} ms", (endTime - startTime));
+								});
 						});
 					} else {
 						return handleUnauthorized(exchange);
 					}
+				})
+				.doFinally(signalType -> {
+					long endTime = System.currentTimeMillis();
+					logger.info("Authentication filter ended at: {}", endTime);
+					logger.info("Authentication filter duration: {} ms", (endTime - startTime));
 				});
 		};
 	}
