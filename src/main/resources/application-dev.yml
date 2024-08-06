@@ -12,25 +12,23 @@ spring:
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/auth/**
-          filters:
-            - name: LoggingFilter
         - id: order-route
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/order/**
           filters:
-            - name: LoggingFilter
             - name: AuthenticationFilter
         - id: payment-route
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/payment/**
           filters:
-            - name: LoggingFilter
             - name: AuthenticationFilter
 logging:
   level:
-    root: INFO
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.web: DEBUG
-    org.flow.gateway.common.log.LoggingFilter: DEBUG
+    org:
+      flow:
+        gateway:
+          common:
+            log:
+              LoggingFilter: DEBUG
