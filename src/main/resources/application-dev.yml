@@ -8,20 +8,93 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: main-auth-route
+        - id: auth-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/auth/logout
+          filters:
+            - name: AuthenticationFilter
+
+        - id: auth-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/auth/**
+
+        - id: hall-of-frame-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/hall-of-frame/**
+
+        - id: job-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/job/**
+
+        - id: search-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/search/**
+
         - id: order-route
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/order/**
           filters:
             - name: AuthenticationFilter
+
         - id: payment-route
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/payment/**
+          filters:
+            - name: AuthenticationFilter
+
+        - id: post-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/post/**
+            - Method=GET
+
+        - id: post-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/post/**
+            - Method=POST,PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
+
+        - id: comment-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/comment/**
+            - Method=GET
+
+        - id: comment-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/comment/**
+            - Method=POST,PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
+
+        - id: user-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/user
+            - Method=GET
+
+        - id: user-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/user
+            - Method=PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
+
+        - id: coffee-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/coffee/**
           filters:
             - name: AuthenticationFilter
 logging:
