@@ -13,12 +13,10 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
         <appender-ref ref="JSON"/>
     </root>
 
-    <logger name="org.flow.gateway.common.log.LoggingFilter" level="DEBUG" additivity="false">
-        <appender-ref ref="STDOUT"/>
+    <logger name="org.flow.gateway.common.log.LoggingFilter" level="INFO" additivity="false">
         <appender-ref ref="JSON"/>
     </logger>
 </configuration>
