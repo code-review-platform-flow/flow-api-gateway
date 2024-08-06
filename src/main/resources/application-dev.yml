@@ -31,4 +31,4 @@ logging:
         gateway:
           common:
             log:
-              LoggingFilter: DEBUG
+              LoggingFilter: INFO
