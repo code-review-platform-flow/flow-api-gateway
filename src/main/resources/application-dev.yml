@@ -11,6 +11,7 @@ spring:
         cors-configurations:
           '[/**]': # 모든 경로에 대해 CORS 설정을 적용
             allowedOrigins:
+              - localhost:3000
               - ${FLOW_WEB_ADDRESS}
               - ${FLOW_ADMIN_DASHBOARD_ADDRESS}
             allowedMethods:
@@ -24,8 +25,7 @@ spring:
         - id: admin-route-non-auth
           uri: ${ADMIN_ROUTE_ADDRESS}
           predicates:
-            - Path=/api/admin/dashboard
-            - Method=GET,POST,PATCH,DELETE
+            - Path=/api/admin/**
 
         - id: auth-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
