@@ -8,6 +8,11 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: admin-route-non-auth
+          uri: ${ADMIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/api/admin/**
+
         - id: auth-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
@@ -90,11 +95,6 @@ spring:
             - Path=/coffee/**
           filters:
             - name: AuthenticationFilter
-
-        - id: admin-route-auth
-          uri: ${ADMIN_ROUTE_ADDRESS}
-          predicates:
-            - Path=/api/admin/**
 logging:
   level:
     org:
