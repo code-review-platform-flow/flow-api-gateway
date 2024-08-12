@@ -12,7 +12,7 @@ spring:
           '[/**]': # 모든 경로에 대해 CORS 설정을 적용
             allowedOrigins:
               - ${FLOW_WEB_ADDRESS}
-              - ${FLOW_ADMIN_ADDRESS}
+              - ${FLOW_ADMIN_DASHBOARD_ADDRESS}
             allowedMethods:
               - GET
               - POST
