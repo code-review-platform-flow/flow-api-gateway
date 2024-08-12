@@ -8,13 +8,6 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth-route-auth
-          uri: ${MAIN_ROUTE_ADDRESS}
-          predicates:
-            - Path=/auth/logout
-          filters:
-            - name: AuthenticationFilter
-
         - id: auth-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
