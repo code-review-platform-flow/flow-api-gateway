@@ -24,7 +24,8 @@ spring:
         - id: admin-route-non-auth
           uri: ${ADMIN_ROUTE_ADDRESS}
           predicates:
-            - Path=/api/admin/**
+            - Path=/api/admin/dashboard
+            - Method=GET,POST,PATCH,DELETE
 
         - id: auth-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
