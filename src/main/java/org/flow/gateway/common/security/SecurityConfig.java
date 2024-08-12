@@ -20,11 +20,11 @@ public class SecurityConfig {
 				.disable() // 개발 또는 특정 경로에 대해 CSRF 보호 비활성화
 			)
 			.authorizeExchange(exchanges -> exchanges
-				.pathMatchers("/auth/**").permitAll() // /auth/** 경로는 인증 없이 접근 가능
+				.pathMatchers("/auth/**", "/api/admin/**").permitAll() // /auth/** 경로는 인증 없이 접근 가능
 				.anyExchange().authenticated() // 다른 모든 경로는 인증 필요
 			)
-			.formLogin(Customizer.withDefaults()) // 기본 로그인 폼 사용
-			.httpBasic(Customizer.withDefaults()); // 기본 HTTP Basic 인증 사용
+			.formLogin(Customizer.withDefaults())
+			.httpBasic(Customizer.withDefaults());
 
 		return http.build();
 	}
