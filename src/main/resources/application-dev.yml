@@ -97,6 +97,11 @@ spring:
             - Path=/coffee/**
           filters:
             - name: AuthenticationFilter
+
+        - id: admin-route-auth
+          uri: ${ADMIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/api/admin/**
 logging:
   level:
     org:
