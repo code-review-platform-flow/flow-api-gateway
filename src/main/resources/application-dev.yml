@@ -9,7 +9,7 @@ spring:
     gateway:
       globalcors:
         cors-configurations:
-          '[/**]': # 모든 경로에 대해 CORS 설정을 적용
+          '[/**]':
             allowedOrigins:
               - http://localhost:3000
               - ${FLOW_WEB_ADDRESS}
