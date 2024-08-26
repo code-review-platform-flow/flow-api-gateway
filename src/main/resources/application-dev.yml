@@ -51,6 +51,7 @@ spring:
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/order/**
+            - Method=POST
           filters:
             - name: AuthenticationFilter
 
