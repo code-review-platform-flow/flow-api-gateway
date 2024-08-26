@@ -108,6 +108,7 @@ spring:
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/coffee/**
+            - Method=POST
           filters:
             - name: AuthenticationFilter
 logging:
