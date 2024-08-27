@@ -35,7 +35,7 @@ spring:
         - id: hall-of-frame-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
-            - Path=/hall-of-frame/**
+            - Path=/hall-of-fame/**
 
         - id: job-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
