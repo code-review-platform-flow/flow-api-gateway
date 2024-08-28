@@ -93,13 +93,13 @@ spring:
         - id: user-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
-            - Path=/user
+            - Path=/user/**
             - Method=GET
 
         - id: user-route-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
-            - Path=/user
+            - Path=/user/**
             - Method=PATCH,DELETE
           filters:
             - name: AuthenticationFilter
