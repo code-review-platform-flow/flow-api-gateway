@@ -35,7 +35,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker buildx build --push \
-            --tag asia-northeast3-docker.pkg.dev/code-review-platform-flow/flow-prd/flow-api-gateway-prd:${{ github.sha }} .
+            --tag asia-northeast3-docker.pkg.dev/gcuflow/flow-prd/flow-api-gateway-prd:${{ github.sha }} .
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
 
       - name: Update manifest
         run: |
-          sed -i "s|image: .*|image: asia-northeast3-docker.pkg.dev/code-review-platform-flow/flow-prd/flow-api-gateway-prd:${{ github.sha }}|" manifests/flow-api-gateway-prd/deployment.yaml
+          sed -i "s|image: .*|image: asia-northeast3-docker.pkg.dev/gcuflow/flow-prd/flow-api-gateway-prd:${{ github.sha }}|" manifests/flow-api-gateway-prd/deployment.yaml
 
       - name: Commit and push changes
         working-directory: manifests
@@ -62,5 +62,5 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add .
-          git commit -m "Update image to asia-northeast3-docker.pkg.dev/code-review-platform-flow/flow-prd/flow-api-gateway-prd:${{ github.sha }}"
+          git commit -m "Update image to asia-northeast3-docker.pkg.dev/gcuflow/flow-prd/flow-api-gateway-prd:${{ github.sha }}"
           git push
