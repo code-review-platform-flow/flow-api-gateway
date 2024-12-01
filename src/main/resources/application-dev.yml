@@ -93,6 +93,20 @@ spring:
           filters:
             - name: AuthenticationFilter
 
+        - id: comment-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/like/**
+            - Method=GET
+
+        - id: comment-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/like/**
+            - Method=POST,PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
+
         - id: user-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
