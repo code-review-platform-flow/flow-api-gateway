@@ -5,9 +5,6 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    pool:
-      enabled: true
-      max-size: 10
   cloud:
     gateway:
       globalcors:
