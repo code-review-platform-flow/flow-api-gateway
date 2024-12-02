@@ -19,6 +19,7 @@ spring:
               - POST
               - PUT
               - DELETE
+              - OPTIONS
             allowedHeaders: "*"
             allowCredentials: true
       routes:
