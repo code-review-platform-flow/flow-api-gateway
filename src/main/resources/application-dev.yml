@@ -115,7 +115,7 @@ spring:
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/user/**
-            - Method=PATCH,DELETE
+            - Method=POST,PATCH,DELETE
           filters:
             - name: AuthenticationFilter
 
