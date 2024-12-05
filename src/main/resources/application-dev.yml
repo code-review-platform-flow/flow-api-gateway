@@ -119,11 +119,17 @@ spring:
           filters:
             - name: AuthenticationFilter
 
+        - id: coffee-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/coffee/**
+            - Method=GET
+
         - id: coffee-route-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
             - Path=/coffee/**
-            - Method=POST
+            - Method=POST,PATCH,DELETE
           filters:
             - name: AuthenticationFilter
 logging:
