@@ -132,6 +132,20 @@ spring:
             - Method=POST,PATCH,DELETE
           filters:
             - name: AuthenticationFilter
+
+        - id: follow-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/follow/**
+            - Method=GET
+
+        - id: follow-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/follow/**
+            - Method=POST,PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
 logging:
   level:
     org:
