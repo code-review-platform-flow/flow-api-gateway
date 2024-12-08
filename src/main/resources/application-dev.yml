@@ -60,6 +60,13 @@ spring:
           uri: ${PAYMENT_ROUTE_ADDRESS}
           predicates:
             - Path=/payment/**
+            - Method=GET
+
+        - id: payment-route
+          uri: ${PAYMENT_ROUTE_ADDRESS}
+          predicates:
+            - Path=/payment/**
+            - Method=POST,PATCH,DELETE
           filters:
             - name: AuthenticationFilter
 
