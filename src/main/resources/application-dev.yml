@@ -153,6 +153,20 @@ spring:
             - Method=POST,PATCH,DELETE
           filters:
             - name: AuthenticationFilter
+
+        - id: alarm-route-non-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/alarm/**
+            - Method=GET
+
+        - id: alarm-route-auth
+          uri: ${MAIN_ROUTE_ADDRESS}
+          predicates:
+            - Path=/alarm/**
+            - Method=POST,PATCH,DELETE
+          filters:
+            - name: AuthenticationFilter
 logging:
   level:
     org:
