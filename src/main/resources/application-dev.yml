@@ -14,6 +14,7 @@ spring:
               - http://localhost:3000
               - ${FLOW_WEB_ADDRESS}
               - ${FLOW_ADMIN_DASHBOARD_ADDRESS}
+              - ${FLOW_HTTPS_WEB_ADDRESS}
             allowedMethods:
               - GET
               - POST
