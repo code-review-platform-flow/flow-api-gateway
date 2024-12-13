@@ -19,6 +19,8 @@ public class SecurityConfig {
 
 	@Value("${FLOW_WEB_ADDRESS}")
 	private String webAddress;
+	@Value("${FLOW_HTTPS_WEB_ADDRESS}")
+	private String httpsWebAddress;
 
 	@Bean
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -37,7 +39,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:3000", webAddress));
+		corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:3000", webAddress, httpsWebAddress));
 		corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
 		corsConfig.setAllowedHeaders(Arrays.asList("*"));
 		corsConfig.setAllowCredentials(true);
