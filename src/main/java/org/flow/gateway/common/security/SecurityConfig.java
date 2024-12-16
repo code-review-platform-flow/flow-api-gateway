@@ -1,7 +1,6 @@
 package org.flow.gateway.common.security;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +21,9 @@ public class SecurityConfig {
 	@Value("${FLOW_HTTPS_WEB_ADDRESS}")
 	private String httpsWebAddress;
 
+	@Value("${FLOW_ADMIN_DASHBOARD_ADDRESS}")
+	private String flowAdminDashboardAddress;
+
 	@Bean
 	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 		http
@@ -39,7 +41,8 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
-		corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:3000", webAddress, httpsWebAddress));
+		corsConfig.setAllowedOrigins(
+			Arrays.asList("http://localhost:3000", webAddress, httpsWebAddress, flowAdminDashboardAddress));
 		corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
 		corsConfig.setAllowedHeaders(Arrays.asList("*"));
 		corsConfig.setAllowCredentials(true);
