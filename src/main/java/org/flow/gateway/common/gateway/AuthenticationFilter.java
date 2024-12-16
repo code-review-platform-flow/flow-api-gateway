@@ -60,8 +60,5 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 		exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 		return exchange.getResponse().setComplete();
 	}
-
-	public static class Config {
-		// Configuration properties if needed
-	}
+	
 }
