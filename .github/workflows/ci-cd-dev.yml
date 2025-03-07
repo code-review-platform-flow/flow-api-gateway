@@ -27,7 +27,7 @@ jobs:
       - name: Log in to Google Cloud
         uses: google-github-actions/auth@v2.1.3
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          credentials_json: ${{ secrets.ORG_DEV_GCP_CREDENTIALS }}
 
       - name: Configure docker for gcloud
         run: gcloud auth configure-docker asia-northeast3-docker.pkg.dev
@@ -35,7 +35,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker buildx build --push \
-            --tag asia-northeast3-docker.pkg.dev/gcuflow/flow-dev/flow-api-gateway-dev:${{ github.sha }} .
+            --tag asia-northeast3-docker.pkg.dev/${{ secrets.ORG_DEV_GCP_PROJECT_ID }}/${{ secrets.ORG_DEV_GCP_REGISTRY_NAME }}/flow-api-gateway-dev:${{ github.sha }}${{ github.run_attempt }} .
 
   deploy:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
 
       - name: Update manifest
         run: |
-          sed -i "s|image: .*|image: asia-northeast3-docker.pkg.dev/gcuflow/flow-dev/flow-api-gateway-dev:${{ github.sha }}|" manifests/flow-api-gateway-dev/deployment.yaml
+          sed -i "s|image: .*|image: asia-northeast3-docker.pkg.dev/${{ secrets.ORG_DEV_GCP_PROJECT_ID }}/${{ secrets.ORG_DEV_GCP_REGISTRY_NAME }}/flow-api-gateway-dev:${{ github.sha }}${{ github.run_attempt }}|" manifests/flow-api-gateway-dev/deployment.yaml
 
       - name: Commit and push changes
         working-directory: manifests
@@ -62,5 +62,5 @@ jobs:
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add .
-          git commit -m "Update image to asia-northeast3-docker.pkg.dev/gcuflow/flow-dev/flow-api-gateway-dev:${{ github.sha }}"
+          git commit -m "Update image to asia-northeast3-docker.pkg.dev/${{ secrets.ORG_DEV_GCP_PROJECT_ID }}/${{ secrets.ORG_DEV_GCP_REGISTRY_NAME }}/flow-api-gateway-dev:${{ github.sha }}${{ github.run_attempt }}"
           git push
