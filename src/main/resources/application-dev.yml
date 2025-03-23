@@ -43,7 +43,7 @@ spring:
         - id: job-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
           predicates:
-            - Path=v1/job/**
+            - Path=/v1/job/**
 
         - id: search-route-non-auth
           uri: ${MAIN_ROUTE_ADDRESS}
